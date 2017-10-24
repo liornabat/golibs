@@ -1,121 +1,115 @@
 package instrument
 
-import (
-	"golang.org/x/sync/syncmap"
-)
+import ()
 
 type InstrumentArray struct {
-	counters   syncmap.Map
-	gauges     syncmap.Map
-	histograms syncmap.Map
+	Namespace  string
+	Subsystem  string
+	Name       string
+	counters   *Instrument
+	gauges     *Instrument
+	histograms *Instrument
 }
 
-func NewInstrumentArray() *InstrumentArray {
-	ia := &InstrumentArray{}
+func NewInstrumentArray(nameSpace, subSystem, name string) *InstrumentArray {
+	ia := &InstrumentArray{
+		Namespace: nameSpace,
+		Subsystem: subSystem,
+		Name:      name,
+	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddCounter(nameSpace, subSystem, name string, labels []string, help ...string) *InstrumentArray {
+func (ia *InstrumentArray) AddCounter(labels []string, help ...string) *InstrumentArray {
 	ins, err := NewInstrument().
-		SetNameSpace(nameSpace).
-		SetSubSystem(subSystem).
-		NewCounterVec(name, labels, help...)
+		SetNameSpace(ia.Namespace).
+		SetSubSystem(ia.Subsystem).
+		NewCounterVec(ia.Name+"_totals", labels, help...)
 	if err == nil {
-		ia.counters.LoadOrStore(name, ins)
+		ia.counters = ins
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddGauge(nameSpace, subSystem, name string, labels []string, help ...string) *InstrumentArray {
+func (ia *InstrumentArray) AddGauge(labels []string, help ...string) *InstrumentArray {
 	ins, err := NewInstrument().
-		SetNameSpace(nameSpace).
-		SetSubSystem(subSystem).
-		NewGaugeVec(name, labels, help...)
+		SetNameSpace(ia.Namespace).
+		SetSubSystem(ia.Subsystem).
+		NewGaugeVec(ia.Name+"_metrics", labels, help...)
 	if err == nil {
-		ia.gauges.LoadOrStore(name, ins)
+		ia.counters = ins
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddHistogram(nameSpace, subSystem, name string, labels []string, buckets []float64, help ...string) *InstrumentArray {
+func (ia *InstrumentArray) AddHistogram(labels []string, buckets []float64, help ...string) *InstrumentArray {
 	ins, err := NewInstrument().
-		SetNameSpace(nameSpace).
-		SetSubSystem(subSystem).
-		NewHistogramVec(name, labels, buckets, help...)
+		SetNameSpace(ia.Namespace).
+		SetSubSystem(ia.Subsystem).
+		NewHistogramVec(ia.Name+"_Observations", labels, buckets, help...)
 	if err == nil {
-		ia.gauges.LoadOrStore(name, ins)
+		ia.histograms = ins
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddToCounter(name string, value float64, lvs ...string) *InstrumentArray {
-	v, ok := ia.counters.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Add(value, lvs...)
+func (ia *InstrumentArray) AddToCounter(value float64, lvs ...string) *InstrumentArray {
+	if ia.counters != nil {
+		ia.counters.Add(value, lvs...)
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddToGauge(name string, value float64, lvs ...string) *InstrumentArray {
-	v, ok := ia.gauges.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Add(value, lvs...)
+func (ia *InstrumentArray) AddToGauge(value float64, lvs ...string) *InstrumentArray {
+
+	if ia.gauges != nil {
+		ia.gauges.Add(value, lvs...)
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) SubFromGauge(name string, value float64, lvs ...string) *InstrumentArray {
-	v, ok := ia.gauges.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Sub(value, lvs...)
+func (ia *InstrumentArray) SubFromGauge(value float64, lvs ...string) *InstrumentArray {
+
+	if ia.gauges != nil {
+		ia.gauges.Sub(value, lvs...)
+	}
+
+	return ia
+}
+
+func (ia *InstrumentArray) IncToCounter(lvs ...string) *InstrumentArray {
+	if ia.counters != nil {
+		ia.counters.Inc(lvs...)
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) IncToCounter(name string, value float64, lvs ...string) *InstrumentArray {
-	v, ok := ia.counters.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Inc(lvs...)
+func (ia *InstrumentArray) IncToGauge(lvs ...string) *InstrumentArray {
+	if ia.gauges != nil {
+		ia.gauges.Inc(lvs...)
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) IncToGauge(name string, lvs ...string) *InstrumentArray {
-	v, ok := ia.gauges.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Inc(lvs...)
+func (ia *InstrumentArray) DecFromGauge(lvs ...string) *InstrumentArray {
+
+	if ia.gauges != nil {
+		ia.gauges.Dec(lvs...)
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) DecFromGauge(name string, lvs ...string) *InstrumentArray {
-	v, ok := ia.gauges.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Dec(lvs...)
-	}
-	return ia
-}
+func (ia *InstrumentArray) SetGauge(value float64, lvs ...string) *InstrumentArray {
 
-func (ia *InstrumentArray) SetGauge(name string, value float64, lvs ...string) *InstrumentArray {
-	v, ok := ia.gauges.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Set(value, lvs...)
+	if ia.gauges != nil {
+		ia.gauges.Set(value, lvs...)
 	}
 	return ia
 }
 
 func (ia *InstrumentArray) ObserveHistogram(name string, value float64, lvs ...string) *InstrumentArray {
-	v, ok := ia.histograms.Load(name)
-	if ok {
-		ins := v.(*Instrument)
-		ins.Observe(value, lvs...)
+	if ia.histograms != nil {
+		ia.histograms.Observe(value, lvs...)
 	}
 	return ia
 }
