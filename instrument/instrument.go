@@ -143,6 +143,7 @@ func (i *Instrument) NewHistogramVec(name string, labels []string, buckets []flo
 			Subsystem: i.subSystem,
 			Name:      name,
 			Help:      h,
+			Buckets:   buckets,
 		},
 		labels)
 
