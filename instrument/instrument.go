@@ -34,6 +34,29 @@ func (i *Instrument) SetSubSystem(subSystem string) *Instrument {
 	return i
 }
 
+func (i *Instrument) NewCounterVec(name string, labels []string, help ...string) (*Instrument, error) {
+	var h string
+
+	if len(help) != 0 {
+		h = help[0]
+	}
+	i.kind = counterVec
+	i.metric = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: i.nameSpace,
+			Subsystem: i.subSystem,
+			Name:      name,
+			Help:      h,
+		},
+		labels)
+
+	err := prometheus.Register(i.metric.(*prometheus.CounterVec))
+	if err != nil {
+		return nil, err
+	}
+	return i, nil
+}
+
 func NewCounterVec(ins *Instrument, name string, labels []string, help ...string) (*Instrument, error) {
 	var h string
 	i := &Instrument{
@@ -59,7 +82,28 @@ func NewCounterVec(ins *Instrument, name string, labels []string, help ...string
 	}
 	return i, nil
 }
+func (i *Instrument) NewGaugeVec(name string, labels []string, help ...string) (*Instrument, error) {
+	var h string
 
+	if len(help) != 0 {
+		h = help[0]
+	}
+	i.kind = gaugeVec
+	i.metric = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace: i.nameSpace,
+			Subsystem: i.subSystem,
+			Name:      name,
+			Help:      h,
+		},
+		labels)
+
+	err := prometheus.Register(i.metric.(*prometheus.GaugeVec))
+	if err != nil {
+		return nil, err
+	}
+	return i, nil
+}
 func NewGaugeVec(ins *Instrument, name string, labels []string, help ...string) (*Instrument, error) {
 	var h string
 	i := &Instrument{
@@ -86,6 +130,28 @@ func NewGaugeVec(ins *Instrument, name string, labels []string, help ...string) 
 	return i, nil
 }
 
+func (i *Instrument) NewHistogramVec(name string, labels []string, buckets []float64, help ...string) (*Instrument, error) {
+	var h string
+
+	if len(help) != 0 {
+		h = help[0]
+	}
+	i.kind = histogramVec
+	i.metric = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: i.nameSpace,
+			Subsystem: i.subSystem,
+			Name:      name,
+			Help:      h,
+		},
+		labels)
+
+	err := prometheus.Register(i.metric.(*prometheus.HistogramVec))
+	if err != nil {
+		return nil, err
+	}
+	return i, nil
+}
 func NewHistogramVec(ins *Instrument, name string, labels []string, buckets []float64, help ...string) (*Instrument, error) {
 	var h string
 	i := &Instrument{
