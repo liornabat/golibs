@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="31b923b6-fdd4-4584-9282-4e931f3fe118" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/instrument/instrument.go" afterPath="$PROJECT_DIR$/instrument/instrument.go" />
+      <change beforePath="$PROJECT_DIR$/instrument/array.go" afterPath="$PROJECT_DIR$/instrument/array.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -64,17 +64,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="array.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="array.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/instrument/array.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="702">
-              <caret line="48" column="16" lean-forward="true" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="16" />
+            <state relative-caret-position="352">
+              <caret line="39" column="17" lean-forward="false" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="instrument.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="instrument.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/instrument/instrument.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="854">
@@ -118,8 +118,8 @@
         <option value="$PROJECT_DIR$/logging/logger.go" />
         <option value="$PROJECT_DIR$/instrument/helpers.go" />
         <option value="$PROJECT_DIR$/instrument/grpc.go" />
-        <option value="$PROJECT_DIR$/instrument/array.go" />
         <option value="$PROJECT_DIR$/instrument/instrument.go" />
+        <option value="$PROJECT_DIR$/instrument/array.go" />
       </list>
     </option>
   </component>
@@ -369,7 +369,8 @@
     <MESSAGE value="add set debug global" />
     <MESSAGE value="Adding Instrument Array" />
     <MESSAGE value="rewrite instrument array" />
-    <option name="LAST_COMMIT_MESSAGE" value="rewrite instrument array" />
+    <MESSAGE value="fix histogram buckets" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix histogram buckets" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -488,18 +489,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/instrument/array.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="48" column="16" lean-forward="true" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/instrument/instrument.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="854">
           <caret line="145" column="31" lean-forward="false" selection-start-line="145" selection-start-column="31" selection-end-line="145" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/instrument/array.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="39" column="17" lean-forward="false" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
           <folding />
         </state>
       </provider>

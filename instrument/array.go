@@ -37,7 +37,7 @@ func (ia *InstrumentArray) AddGauge(labels []string, help ...string) *Instrument
 		SetSubSystem(ia.Subsystem).
 		NewGaugeVec(ia.Name+"_metrics", labels, help...)
 	if err == nil {
-		ia.counters = ins
+		ia.gauges = ins
 	}
 	return ia
 }
