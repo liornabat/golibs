@@ -3,9 +3,9 @@ package webservice
 import (
 	"context"
 	"fmt"
+	"golibs/instrument"
+	"golibs/logging"
 	"gopkg.in/resty.v1"
-	"niobe-libs/instrument"
-	"niobe-libs/logging"
 	"time"
 )
 
