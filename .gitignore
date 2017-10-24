@@ -1,0 +1,10 @@
+*.dat
+*.log
+*.news
+!*.raw
+!*.exe
+!*.dll
+mt4-gw
+news/
+.idea/workspace.xml
+vendor/*
