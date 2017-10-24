@@ -34,6 +34,13 @@ func (l *Logger) NewLogger(src string) *Logger {
 	}
 	return nl
 }
+func SetDebug(isDebug bool) {
+	if isDebug {
+		logrus.SetLevel(logrus.DebugLevel)
+		return
+	}
+	logrus.SetLevel(logrus.InfoLevel)
+}
 
 func (l *Logger) SetDebug(isDebug bool) {
 	if isDebug {
