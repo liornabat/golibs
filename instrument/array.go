@@ -107,7 +107,7 @@ func (ia *InstrumentArray) SetGauge(value float64, lvs ...string) *InstrumentArr
 	return ia
 }
 
-func (ia *InstrumentArray) ObserveHistogram(name string, value float64, lvs ...string) *InstrumentArray {
+func (ia *InstrumentArray) ObserveHistogram(value float64, lvs ...string) *InstrumentArray {
 	if ia.histograms != nil {
 		ia.histograms.Observe(value, lvs...)
 	}
