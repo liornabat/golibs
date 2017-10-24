@@ -10,7 +10,7 @@ type InstrumentArray struct {
 	histograms syncmap.Map
 }
 
-func NewInstrumentArray(nameSpace, subSystem string) *InstrumentArray {
+func NewInstrumentArray() *InstrumentArray {
 	ia := &InstrumentArray{}
 	return ia
 }
