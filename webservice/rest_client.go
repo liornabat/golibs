@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Client struct {
+type RestClient struct {
 	Name           string
 	Host           string
 	Port           string
@@ -41,8 +41,8 @@ type ClientResponse struct {
 
 var loggerHttp = logging.NewLogger("webservice/client")
 
-func NewClient(name, host, port, user, password string) *Client {
-	c := &Client{
+func NewRestClient(name, host, port, user, password string) *RestClient {
+	c := &RestClient{
 		Name:     name,
 		Host:     host,
 		Port:     port,
@@ -53,15 +53,15 @@ func NewClient(name, host, port, user, password string) *Client {
 	}
 	return c
 }
-func (c *Client) AddBaseRoute(name, path string) *Client {
+func (c *RestClient) AddBaseRoute(name, path string) *RestClient {
 	c.Routes[name] = path
 	return c
 }
-func (c *Client) SetHeader(k, v string) *Client {
+func (c *RestClient) SetHeader(k, v string) *RestClient {
 	c.Headers[k] = v
 	return c
 }
-func (c *Client) NewRequest(ctx context.Context, baseName string) *ClientRequest {
+func (c *RestClient) NewRequest(ctx context.Context, baseName string) *ClientRequest {
 	cr := &ClientRequest{
 		r:   resty.R(),
 		ins: c.ins,
@@ -74,7 +74,7 @@ func (c *Client) NewRequest(ctx context.Context, baseName string) *ClientRequest
 	return cr
 }
 
-func (c *Client) EnableInstrumenting() *Client {
+func (c *RestClient) EnableInstrumenting() *RestClient {
 	ins, err := instrument.NewInstrument().SetHttpInstrument(c.Name)
 	if err != nil {
 		loggerHttp.Error(err, "Unable to set instrumentation")

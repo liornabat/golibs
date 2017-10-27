@@ -42,7 +42,7 @@ const (
 var logger = log.NewLogger("web/server")
 var instrumentApiServer = ins.NewInstrument().SetNameSpace("web").SetNameSpace("server")
 
-func WS(p string) *Server {
+func NewServer(p string) *Server {
 	s := &Server{
 		port:   p,
 		routes: make(map[string]*route),
