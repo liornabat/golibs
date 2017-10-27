@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="31b923b6-fdd4-4584-9282-4e931f3fe118" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/logging/logger.go" afterPath="$PROJECT_DIR$/logging/logger.go" />
-      <change beforePath="$PROJECT_DIR$/webservice/server.go" afterPath="$PROJECT_DIR$/webservice/server.go" />
+      <change beforePath="$PROJECT_DIR$/webservice/rest_client.go" afterPath="$PROJECT_DIR$/webservice/rest_client.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,8 +37,8 @@
       <file leaf-file-name="rest_client.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webservice/rest_client.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1075">
-              <caret line="43" column="18" lean-forward="false" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
+            <state relative-caret-position="925">
+              <caret line="73" column="5" lean-forward="false" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -98,7 +97,7 @@
       <file leaf-file-name="server.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webservice/server.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1098">
+            <state relative-caret-position="1073">
               <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="170" selection-end-column="0" />
               <folding />
             </state>
@@ -129,10 +128,10 @@
         <option value="$PROJECT_DIR$/instrument/grpc.go" />
         <option value="$PROJECT_DIR$/instrument/instrument.go" />
         <option value="$PROJECT_DIR$/instrument/array.go" />
-        <option value="$PROJECT_DIR$/webservice/rest_client.go" />
         <option value="$PROJECT_DIR$/webservice/socket_client.go" />
         <option value="$PROJECT_DIR$/logging/logger.go" />
         <option value="$PROJECT_DIR$/webservice/server.go" />
+        <option value="$PROJECT_DIR$/webservice/rest_client.go" />
       </list>
     </option>
   </component>
@@ -383,7 +382,8 @@
     <MESSAGE value="rewrite instrument array" />
     <MESSAGE value="fix histogram buckets" />
     <MESSAGE value="Adding socket client&#10;rename structs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding socket client&#10;rename structs" />
+    <MESSAGE value="fixing socket io not sending logs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing socket io not sending logs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -622,14 +622,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webservice/rest_client.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1075">
-          <caret line="43" column="18" lean-forward="false" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webservice/socket_client.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
@@ -646,9 +638,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/webservice/rest_client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="925">
+          <caret line="73" column="5" lean-forward="false" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/webservice/server.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1098">
+        <state relative-caret-position="1073">
           <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="170" selection-end-column="0" />
           <folding />
         </state>

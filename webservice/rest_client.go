@@ -68,7 +68,9 @@ func (c *RestClient) NewRequest(ctx context.Context, baseName string) *ClientReq
 	}
 	cr.base = baseName
 	cr.r.SetHeaders(c.Headers)
-	cr.r.SetBasicAuth(c.User, c.Password)
+	if c.User != "" {
+		cr.r.SetBasicAuth(c.User, c.Password)
+	}
 	cr.r.SetContext(ctx)
 	cr.path = fmt.Sprintf("%s:%s%s", c.Host, c.Port, c.Routes[baseName])
 	return cr
