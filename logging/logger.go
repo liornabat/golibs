@@ -3,7 +3,7 @@ package logging
 import (
 	"github.com/sirupsen/logrus"
 
-	"fmt"
+	//"fmt"
 	"os"
 )
 
@@ -24,7 +24,6 @@ func NewLogger(src string) *Logger {
 		log: logrus.WithFields(logrus.Fields{"source": src}),
 		src: src,
 	}
-	logrus.AddHook(l)
 	return l
 }
 func (l *Logger) NewLogger(src string) *Logger {
@@ -48,11 +47,6 @@ func (l *Logger) SetDebug(isDebug bool) {
 		return
 	}
 	logrus.SetLevel(logrus.InfoLevel)
-}
-
-func (l *Logger) SetHook(f func(msg string)) *Logger {
-	l.f = f
-	return l
 }
 
 func (l *Logger) Info(args ...interface{}) {
@@ -110,28 +104,4 @@ func (l *Logger) Panic(err error, args ...interface{}) {
 	}
 	l.log.Panic(args)
 
-}
-
-func (l *Logger) Levels() []logrus.Level {
-	return []logrus.Level{
-		logrus.DebugLevel,
-		logrus.InfoLevel,
-		logrus.WarnLevel,
-		logrus.ErrorLevel,
-		logrus.FatalLevel,
-		logrus.PanicLevel,
-	}
-}
-
-func (l *Logger) Fire(entry *logrus.Entry) error {
-	var fields string
-	for key, value := range entry.Data {
-		fields = fmt.Sprintf("%s %s:%s ", fields, key, value)
-	}
-	msg := fmt.Sprintf("[%s] [%s] (%s) %s", entry.Time.Format("2006-01-02 15:04:05.999"), fields, entry.Level.String(), entry.Message)
-	if l.f != nil {
-		l.f(msg)
-	}
-
-	return nil
 }

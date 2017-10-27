@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
+	"github.com/sirupsen/logrus"
 	ins "golibs/instrument"
 	log "golibs/logging"
 )
@@ -137,7 +138,7 @@ func (s *Server) startHttpServer() {
 
 	if s.isSocketIO {
 		s.wsServer = s.getWebSocketServer()
-		logger.SetHook(s.sendLogs)
+		logrus.AddHook(s)
 		router.Any("/socket.io/", gin.WrapH(s.wsServer))
 	}
 
@@ -157,15 +158,41 @@ func (s *Server) getWebSocketServer() *gosocketio.Server {
 	server := gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
 
 	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
-		logger.InfoF("Client from %s has connected.", c.Ip())
+		logger.Info(fmt.Sprintf("Client from %s has connected.", c.Ip()))
 	})
 	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel) {
-		logger.InfoF("Client from %s has disconnected", c.Ip())
+		logger.Info(fmt.Sprintf("Client from %s has disconnected", c.Ip()))
 	})
 	server.On("/join", func(c *gosocketio.Channel, room string) string {
 		c.Join(room)
-		logger.InfoF("Client from %s has joined to %s room", c.Ip(), room)
+		logger.Info(fmt.Sprintf("Client from %s has joined to %s room", c.Ip(), room))
 		return "joined"
 	})
+
 	return server
+}
+
+func (s *Server) Levels() []logrus.Level {
+	return []logrus.Level{
+		logrus.DebugLevel,
+		logrus.InfoLevel,
+		logrus.WarnLevel,
+		logrus.ErrorLevel,
+		logrus.FatalLevel,
+		logrus.PanicLevel,
+	}
+}
+
+func (s *Server) Fire(entry *logrus.Entry) error {
+	var fields string
+	for key, value := range entry.Data {
+		fields = fmt.Sprintf("%s %s:%s ", fields, key, value)
+	}
+	msg := fmt.Sprintf("[%s] [%s] (%s) %s", entry.Time.Format("2006-01-02 15:04:05.999"), fields, entry.Level.String(), entry.Message)
+
+	if s.isSocketIO {
+		s.wsServer.BroadcastTo("main", "/logs", msg)
+	}
+
+	return nil
 }
