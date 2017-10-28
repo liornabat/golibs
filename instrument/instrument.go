@@ -48,8 +48,8 @@ func NewGaugeMetric(nameSpace,subSystem,name,help string,labels []string) (*Inst
 		nameSpace: nameSpace,
 		subSystem: subSystem,
 	}
-	i.metric = prometheus.NewCounterVec(
-		prometheus.CounterOpts{
+	i.metric = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
 			Namespace: i.nameSpace,
 			Subsystem: i.subSystem,
 			Name:      name,
