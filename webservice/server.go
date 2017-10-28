@@ -10,7 +10,6 @@ import (
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
 	"github.com/sirupsen/logrus"
-	ins "golibs/instrument"
 	log "golibs/logging"
 )
 
@@ -41,7 +40,7 @@ const (
 )
 
 var logger = log.NewLogger("web/server")
-var instrumentApiServer = ins.NewInstrument().SetNameSpace("web").SetNameSpace("server")
+
 
 func NewServer(p string) *Server {
 	s := &Server{
