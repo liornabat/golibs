@@ -257,3 +257,18 @@ func (i *Instrument) Observe(value float64, lvs ...string) *Instrument {
 	}
 	return i
 }
+
+func (i *Instrument) SetUnregistered() {
+	switch i.kind {
+	case counterVec:
+		metric := i.metric.(*prometheus.CounterVec)
+		prometheus.Unregister(metric)
+	case gaugeVec:
+		metric := i.metric.(*prometheus.GaugeVec)
+		prometheus.Unregister(metric)
+	case histogramVec:
+		metric := i.metric.(*prometheus.HistogramVec)
+		prometheus.Unregister(metric)
+	}
+
+}

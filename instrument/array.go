@@ -113,3 +113,17 @@ func (ia *InstrumentArray) ObserveHistogram(value float64, lvs ...string) *Instr
 	}
 	return ia
 }
+
+func (ia *InstrumentArray) UnRegister() {
+
+	if ia.histograms != nil {
+		ia.histograms.SetUnregistered()
+	}
+	if ia.counters != nil {
+		ia.counters.SetUnregistered()
+	}
+	if ia.gauges != nil {
+		ia.gauges.SetUnregistered()
+	}
+
+}
