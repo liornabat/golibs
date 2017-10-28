@@ -162,6 +162,7 @@ func (cr *ClientRequest) execute(kind, url string) (*ClientResponse, error) {
 			cr.ins.SetResult(kind, cr.base, false)
 		}
 		loggerHttp.Error(err, fmt.Sprintf("calling: %s ", cr.path))
+		return nil, err
 	} else {
 		if response.StatusCode() <= 299 {
 			if cr.ins != nil {

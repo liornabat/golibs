@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="31b923b6-fdd4-4584-9282-4e931f3fe118" name="Default" comment="if the is not user/ password disable set auth in resty client">
-      <change beforePath="" afterPath="$PROJECT_DIR$/db/client.go" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/db/db_test.go" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/db/request.go" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/db/result.go" />
+    <list default="true" id="31b923b6-fdd4-4584-9282-4e931f3fe118" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/webservice/rest_client.go" afterPath="$PROJECT_DIR$/webservice/rest_client.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,11 +24,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rest_client.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="rest_client.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webservice/rest_client.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1825">
-              <caret line="73" column="5" lean-forward="false" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+            <state relative-caret-position="469">
+              <caret line="165" column="0" lean-forward="false" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -71,7 +68,7 @@
         <entry file="file://$PROJECT_DIR$/db/client.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1229">
-              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+              <caret line="68" column="0" lean-forward="false" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -87,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="request.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="request.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db/request.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1000">
-              <caret line="40" column="1" lean-forward="true" selection-start-line="40" selection-start-column="1" selection-end-line="40" selection-end-column="1" />
+              <caret line="40" column="1" lean-forward="false" selection-start-line="40" selection-start-column="1" selection-end-line="40" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -134,7 +131,6 @@
         <option value="$PROJECT_DIR$/webservice/socket_client.go" />
         <option value="$PROJECT_DIR$/logging/logger.go" />
         <option value="$PROJECT_DIR$/webservice/server.go" />
-        <option value="$PROJECT_DIR$/webservice/rest_client.go" />
         <option value="$PROJECT_DIR$/db/mssql.go" />
         <option value="$PROJECT_DIR$/db/main.go" />
         <option value="$PROJECT_DIR$/db/common.go" />
@@ -142,6 +138,7 @@
         <option value="$PROJECT_DIR$/db/client.go" />
         <option value="$PROJECT_DIR$/db/db_test.go" />
         <option value="$PROJECT_DIR$/db/request.go" />
+        <option value="$PROJECT_DIR$/webservice/rest_client.go" />
       </list>
     </option>
   </component>
@@ -153,9 +150,9 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-9" />
-    <option name="y" value="-9" />
-    <option name="width" value="3858" />
-    <option name="height" value="2128" />
+    <option name="y" value="-2709" />
+    <option name="width" value="3218" />
+    <option name="height" value="1768" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -179,6 +176,11 @@
             <path>
               <item name="golibs" type="b2602c69:ProjectViewProjectNode" />
               <item name="golibs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="golibs" type="b2602c69:ProjectViewProjectNode" />
+              <item name="golibs" type="462c0819:PsiDirectoryNode" />
+              <item name="webservice" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -354,17 +356,18 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="3858" height="2128" extended-state="6" />
+    <frame x="-9" y="-2709" width="3218" height="1768" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19169751" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23074475" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32958034" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24027604" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30936012" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24220242" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -422,7 +425,8 @@
     <MESSAGE value="Adding socket client&#10;rename structs" />
     <MESSAGE value="fixing socket io not sending logs" />
     <MESSAGE value="if the is not user/ password disable set auth in resty client" />
-    <option name="LAST_COMMIT_MESSAGE" value="if the is not user/ password disable set auth in resty client" />
+    <MESSAGE value="Adding Db using sqlx support" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding Db using sqlx support" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -717,14 +721,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webservice/rest_client.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1825">
-          <caret line="73" column="5" lean-forward="false" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webservice/server.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1074">
@@ -744,7 +740,7 @@
     <entry file="file://$PROJECT_DIR$/db/client.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1229">
-          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <caret line="68" column="0" lean-forward="false" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -776,7 +772,15 @@
     <entry file="file://$PROJECT_DIR$/db/request.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1000">
-          <caret line="40" column="1" lean-forward="true" selection-start-line="40" selection-start-column="1" selection-end-line="40" selection-end-column="1" />
+          <caret line="40" column="1" lean-forward="false" selection-start-line="40" selection-start-column="1" selection-end-line="40" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webservice/rest_client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="165" column="0" lean-forward="false" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
           <folding />
         </state>
       </provider>
