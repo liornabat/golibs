@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"errors"
-	"fmt"
+
 	"os"
 )
 
@@ -36,8 +36,8 @@ func TestHook(t *testing.T) {
 	require := require.New(t)
 	log := NewLogger("test")
 	require.NotNil(log.log)
-	log.SetHook(func(msg string) {
-		fmt.Println("testing hook ", msg)
-	})
+	//log.SetHook(func(msg string) {
+	//	fmt.Println("testing hook ", msg)
+	//})
 	log.Info("testing")
 }

@@ -1,6 +1,5 @@
 package instrument
 
-import ()
 
 type InstrumentArray struct {
 	Namespace  string
@@ -20,33 +19,24 @@ func NewInstrumentArray(nameSpace, subSystem, name string) *InstrumentArray {
 	return ia
 }
 
-func (ia *InstrumentArray) AddCounter(labels []string, help ...string) *InstrumentArray {
-	ins, err := NewInstrument().
-		SetNameSpace(ia.Namespace).
-		SetSubSystem(ia.Subsystem).
-		NewCounterVec(ia.Name+"_totals", labels, help...)
+func (ia *InstrumentArray) AddCounter(labels []string, help string) *InstrumentArray {
+	ins, err := NewCounterMetric(ia.Namespace,ia.Subsystem,ia.Name+"_totals",help,labels)
 	if err == nil {
 		ia.counters = ins
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddGauge(labels []string, help ...string) *InstrumentArray {
-	ins, err := NewInstrument().
-		SetNameSpace(ia.Namespace).
-		SetSubSystem(ia.Subsystem).
-		NewGaugeVec(ia.Name+"_metrics", labels, help...)
+func (ia *InstrumentArray) AddGauge(labels []string, help string) *InstrumentArray {
+	ins, err := NewGaugeMetric(ia.Namespace,ia.Subsystem,ia.Name+"_metrics",help,labels)
 	if err == nil {
 		ia.gauges = ins
 	}
 	return ia
 }
 
-func (ia *InstrumentArray) AddHistogram(labels []string, buckets []float64, help ...string) *InstrumentArray {
-	ins, err := NewInstrument().
-		SetNameSpace(ia.Namespace).
-		SetSubSystem(ia.Subsystem).
-		NewHistogramVec(ia.Name+"_Observations", labels, buckets, help...)
+func (ia *InstrumentArray) AddHistogram(labels []string, buckets []float64, help string) *InstrumentArray {
+	ins, err := NewHistogramMetric(ia.Namespace,ia.Subsystem,ia.Name+"_Observations",help, labels, buckets)
 	if err == nil {
 		ia.histograms = ins
 	}
