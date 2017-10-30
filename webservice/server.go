@@ -196,7 +196,10 @@ func (s *Server) startHttpServer() {
 			logger.Error(err, "validation error for CORS config. No CORS support will be available")
 		} else {
 			router.Use(cors.New(s.corsConfig))
+			logger.Info("CORS support available")
 		}
+	} else {
+		logger.Info("CORS support is not set.No CORS support will be available")
 	}
 
 	go router.Run(fmt.Sprintf(":%s", s.port))
