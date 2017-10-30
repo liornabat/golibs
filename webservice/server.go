@@ -88,6 +88,7 @@ func (s *Server) SetGinDebug() *Server {
 
 func (s *Server) SetCorsAllowAll() *Server {
 	s.isCors = true
+	s.corsConfig = cors.DefaultConfig()
 	s.corsConfig.AllowAllOrigins = true
 	return s
 }
@@ -135,6 +136,17 @@ func (s *Server) Run() {
 func (s *Server) startHttpServer() {
 
 	router := gin.Default()
+
+	if s.isCors {
+		if err := s.corsConfig.Validate(); err != nil {
+			logger.Error(err, "validation error for CORS config. No CORS support will be available")
+		} else {
+			router.Use(cors.New(s.corsConfig))
+			logger.Info("CORS support available")
+		}
+	} else {
+		logger.Info("CORS support is not set.No CORS support will be available")
+	}
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "hi")
@@ -189,17 +201,6 @@ func (s *Server) startHttpServer() {
 
 	if s.isPrometheus {
 		router.Any("/metrics", gin.WrapH(promhttp.Handler()))
-	}
-
-	if s.isCors {
-		if err := s.corsConfig.Validate(); err != nil {
-			logger.Error(err, "validation error for CORS config. No CORS support will be available")
-		} else {
-			router.Use(cors.New(s.corsConfig))
-			logger.Info("CORS support available")
-		}
-	} else {
-		logger.Info("CORS support is not set.No CORS support will be available")
 	}
 
 	go router.Run(fmt.Sprintf(":%s", s.port))
