@@ -76,10 +76,10 @@ func (c *RestClient) NewRequest(ctx context.Context, baseName string) *ClientReq
 	return cr
 }
 
-func (c *RestClient) EnableInstrumenting(nameSpace,subSystem string) *RestClient {
-	ins := instrument.NewInstrumentArray(nameSpace,subSystem,c.Name).
-	AddCounter([]string{"type", "func", "result"}, "counters for total results of function calls").
-	AddHistogram([]string{"type", "func"}, []float64{0.01, 0.5, 1, 2, 5, 10, 20, 30}, "histogram for stats results of function calls")
+func (c *RestClient) EnableInstrumenting(nameSpace, subSystem string) *RestClient {
+	ins := instrument.NewInstrumentArray(nameSpace, subSystem, c.Name).
+		AddCounter([]string{"type", "func", "result"}, "counters for total results of function calls").
+		AddHistogram([]string{"type", "func"}, []float64{0.01, 0.5, 1, 2, 5, 10, 20, 30}, "histogram for stats results of function calls")
 
 	c.ins = ins
 	c.isInstrumented = true
@@ -98,6 +98,10 @@ func (cr *ClientRequest) SetRequest(req interface{}) *ClientRequest {
 func (cr *ClientRequest) SetResult(res interface{}) *ClientRequest {
 	cr.r.SetResult(res)
 	cr.resStruct = res
+	if cr.errStruct == nil {
+		cr.r.SetError(res)
+		cr.errStruct = res
+	}
 	return cr
 }
 
@@ -140,7 +144,7 @@ func (cr *ClientRequest) execute(kind, url string) (*ClientResponse, error) {
 	start := time.Now()
 	defer func() {
 		if cr.ins != nil {
-			cr.ins.ObserveHistogram(float64(time.Since(start)), kind, cr.base )
+			cr.ins.ObserveHistogram(float64(time.Since(start)), kind, cr.base)
 		}
 		loggerHttp.Debug(fmt.Sprintf("calling %s: %s completed", kind, cr.path))
 	}()
@@ -158,18 +162,18 @@ func (cr *ClientRequest) execute(kind, url string) (*ClientResponse, error) {
 
 	if err != nil {
 		if cr.ins != nil {
-			cr.ins.IncToCounter(kind, cr.base,"Fail")
+			cr.ins.IncToCounter(kind, cr.base, "Fail")
 		}
 		loggerHttp.Error(err, fmt.Sprintf("calling: %s ", cr.path))
 		return nil, err
 	} else {
 		if response.StatusCode() <= 299 {
 			if cr.ins != nil {
-				cr.ins.IncToCounter(kind, cr.base,"Ok")
+				cr.ins.IncToCounter(kind, cr.base, "Ok")
 			}
 		} else {
 			if cr.ins != nil {
-				cr.ins.IncToCounter(kind, cr.base,"Fail")
+				cr.ins.IncToCounter(kind, cr.base, "Fail")
 			}
 			loggerHttp.Error(nil, fmt.Sprintf("status code: %d ,calling: %s ", response.StatusCode(), cr.path))
 		}

@@ -41,7 +41,6 @@ const (
 
 var logger = log.NewLogger("web/server")
 
-
 func NewServer(p string) *Server {
 	s := &Server{
 		port:   p,

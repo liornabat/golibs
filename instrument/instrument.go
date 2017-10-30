@@ -19,9 +19,9 @@ const (
 	histogramVec metricType = 3
 )
 
-func NewCounterMetric(nameSpace,subSystem,name,help string,labels []string) (*Instrument,error) {
+func NewCounterMetric(nameSpace, subSystem, name, help string, labels []string) (*Instrument, error) {
 	i := &Instrument{
-		kind: counterVec,
+		kind:      counterVec,
 		nameSpace: nameSpace,
 		subSystem: subSystem,
 	}
@@ -41,10 +41,9 @@ func NewCounterMetric(nameSpace,subSystem,name,help string,labels []string) (*In
 	return i, nil
 }
 
-
-func NewGaugeMetric(nameSpace,subSystem,name,help string,labels []string) (*Instrument,error) {
+func NewGaugeMetric(nameSpace, subSystem, name, help string, labels []string) (*Instrument, error) {
 	i := &Instrument{
-		kind: gaugeVec,
+		kind:      gaugeVec,
 		nameSpace: nameSpace,
 		subSystem: subSystem,
 	}
@@ -64,11 +63,10 @@ func NewGaugeMetric(nameSpace,subSystem,name,help string,labels []string) (*Inst
 	return i, nil
 }
 
-func  NewHistogramMetric(nameSpace,subSystem,name,help string,labels []string,buckets []float64) (*Instrument, error) {
-
+func NewHistogramMetric(nameSpace, subSystem, name, help string, labels []string, buckets []float64) (*Instrument, error) {
 
 	i := &Instrument{
-		kind: histogramVec,
+		kind:      histogramVec,
 		nameSpace: nameSpace,
 		subSystem: subSystem,
 	}
@@ -88,8 +86,6 @@ func  NewHistogramMetric(nameSpace,subSystem,name,help string,labels []string,bu
 	}
 	return i, nil
 }
-
-
 
 func (i *Instrument) Add(value float64, lvs ...string) *Instrument {
 	switch i.kind {
