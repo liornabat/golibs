@@ -98,6 +98,10 @@ func (cr *ClientRequest) SetRequest(req interface{}) *ClientRequest {
 func (cr *ClientRequest) SetResult(res interface{}) *ClientRequest {
 	cr.r.SetResult(res)
 	cr.resStruct = res
+	if cr.errStruct == nil {
+		cr.r.SetError(res)
+		cr.errStruct = res
+	}
 	return cr
 }
 

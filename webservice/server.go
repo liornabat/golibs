@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
 	"github.com/sirupsen/logrus"
 	log "golibs/logging"
+	"time"
 )
 
 type RouteType int
@@ -23,6 +25,8 @@ type Server struct {
 	isSocketIO   bool
 	isPrometheus bool
 	routes       map[string]*route
+	isCors       bool
+	corsConfig   cors.Config
 }
 
 type route struct {
@@ -41,11 +45,11 @@ const (
 
 var logger = log.NewLogger("web/server")
 
-
 func NewServer(p string) *Server {
 	s := &Server{
-		port:   p,
-		routes: make(map[string]*route),
+		port:       p,
+		routes:     make(map[string]*route),
+		corsConfig: cors.DefaultConfig(),
 	}
 	gin.SetMode(gin.ReleaseMode)
 
@@ -82,6 +86,49 @@ func (s *Server) SetGinDebug() *Server {
 	return s
 }
 
+func (s *Server) SetCorsAllowAll() *Server {
+	s.isCors = true
+	s.corsConfig = cors.DefaultConfig()
+	s.corsConfig.AllowAllOrigins = true
+	return s
+}
+
+func (s *Server) SetCorsAllowOrigins(origins []string) *Server {
+	s.isCors = true
+	s.corsConfig.AllowOrigins = origins
+	return s
+}
+
+func (s *Server) SetCorsAllowMethods(methods []string) *Server {
+	s.isCors = true
+	s.corsConfig.AllowMethods = methods
+	return s
+}
+
+func (s *Server) SetCorsAllowHeaders(headers []string) *Server {
+	s.isCors = true
+	s.corsConfig.AllowHeaders = headers
+	return s
+}
+
+func (s *Server) SetCorsExposeHeaders(headers []string) *Server {
+	s.isCors = true
+	s.corsConfig.ExposeHeaders = headers
+	return s
+}
+
+func (s *Server) SetCorsAllowedCredentials() *Server {
+	s.isCors = true
+	s.corsConfig.AllowCredentials = true
+	return s
+}
+
+func (s *Server) SetCorsMaxAge(duration time.Duration) *Server {
+	s.isCors = true
+	s.corsConfig.MaxAge = duration
+	return s
+}
+
 func (s *Server) Run() {
 	s.startHttpServer()
 }
@@ -89,6 +136,17 @@ func (s *Server) Run() {
 func (s *Server) startHttpServer() {
 
 	router := gin.Default()
+
+	if s.isCors {
+		if err := s.corsConfig.Validate(); err != nil {
+			logger.Error(err, "validation error for CORS config. No CORS support will be available")
+		} else {
+			router.Use(cors.New(s.corsConfig))
+			logger.Info("CORS support available")
+		}
+	} else {
+		logger.Info("CORS support is not set.No CORS support will be available")
+	}
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "hi")
