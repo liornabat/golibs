@@ -34,9 +34,9 @@ type ClientRequest struct {
 type ClientResponse struct {
 	StatusCode int
 	Body       string
-	reqStruct  interface{}
-	resStruct  interface{}
-	errStruct  interface{}
+	ReqStruct  interface{}
+	ResStruct  interface{}
+	ErrStruct  interface{}
 }
 
 var loggerHttp = logging.NewLogger("webservice/client")
@@ -202,9 +202,9 @@ func (cr *ClientRequest) getClientResponse(response *resty.Response) *ClientResp
 	res := &ClientResponse{
 		StatusCode: response.StatusCode(),
 		Body:       (string)(response.Body()),
-		reqStruct:  cr.reqStruct,
-		resStruct:  cr.resStruct,
-		errStruct:  cr.resStruct,
+		ReqStruct:  cr.reqStruct,
+		ResStruct:  cr.resStruct,
+		ErrStruct:  cr.resStruct,
 	}
 	return res
 }
