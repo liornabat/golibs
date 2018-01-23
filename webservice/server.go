@@ -27,6 +27,8 @@ type Server struct {
 	routes       map[string]*route
 	isCors       bool
 	corsConfig   cors.Config
+	jwt *JwtAuth
+
 }
 
 type route struct {
@@ -129,6 +131,12 @@ func (s *Server) SetCorsMaxAge(duration time.Duration) *Server {
 	return s
 }
 
+func (s *Server) SetJwtAuth(j *JwtAuth) *Server {
+	s.jwt = j
+	return s
+}
+
+
 func (s *Server) Run() {
 	s.startHttpServer()
 }
@@ -189,7 +197,7 @@ func (s *Server) startHttpServer() {
 		case PUT:
 			router.PUT(value.path, value.f)
 		case DELETE:
-			router.PUT(value.path, value.f)
+			router.DELETE(value.path, value.f)
 		}
 	}
 
@@ -201,6 +209,17 @@ func (s *Server) startHttpServer() {
 
 	if s.isPrometheus {
 		router.Any("/metrics", gin.WrapH(promhttp.Handler()))
+	}
+
+
+	if s.jwt !=nil {
+		err:=s.jwt.set(router)
+		if err!=nil {
+			logger.Error(err, "error during set of jwt middleware")
+		} else {
+			logger.Info("jwt middleware was set")
+		}
+
 	}
 
 	go router.Run(fmt.Sprintf(":%s", s.port))

@@ -76,6 +76,22 @@ func (c *RestClient) NewRequest(ctx context.Context, baseName string) *ClientReq
 	return cr
 }
 
+func (c *RestClient) NewAuthenticatedRequest(ctx context.Context, baseName string, authToken string) *ClientRequest {
+	cr := &ClientRequest{
+		r:   resty.R(),
+		ins: c.ins,
+	}
+	cr.base = baseName
+	cr.r.SetHeaders(c.Headers)
+	if c.User != "" {
+		cr.r.SetAuthToken(authToken)
+	}
+	cr.r.SetContext(ctx)
+	cr.path = fmt.Sprintf("%s:%s%s", c.Host, c.Port, c.Routes[baseName])
+	return cr
+}
+
+
 func (c *RestClient) EnableInstrumenting(nameSpace, subSystem string) *RestClient {
 	ins := instrument.NewInstrumentArray(nameSpace, subSystem, c.Name).
 		AddCounter([]string{"type", "func", "result"}, "counters for total results of function calls").
