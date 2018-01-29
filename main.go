@@ -5,9 +5,10 @@ import (
 
 	ws "golibs/webservice"
 
-	"github.com/gin-gonic/gin"
 	"github.com/appleboy/gin-jwt"
+	"github.com/gin-gonic/gin"
 	"runtime"
+
 )
 
 func helloHandler(c *gin.Context) {
@@ -36,19 +37,15 @@ func authorizator(userId string, c *gin.Context) bool {
 
 func main() {
 
-j:= ws.NewJwtAuth().
-	AddRoute(ws.AuthGET, "/hello", helloHandler).
-	SetAuthenticatorFunc(authenticator).
-	SetKey("asfukasdasasd-awdasda-234dasdad").
-	SetAuthorizatorFunc(authorizator)
+	j := ws.NewJwtAuth().
+		AddRoute(ws.AuthGET, "/hello", helloHandler).
+		SetAuthenticatorFunc(authenticator).
+		SetKey("asfukasdasasd-awdasda-234dasdad").
+		SetAuthorizatorFunc(authorizator)
 	s := ws.NewServer("8000").
 		SetJwtAuth(j)
 
 	s.Run()
 
-
-
 	runtime.Goexit()
 }
-
-

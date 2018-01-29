@@ -13,6 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 	log "golibs/logging"
 	"time"
+	"github.com/appleboy/gin-jwt"
 )
 
 type RouteType int
@@ -27,8 +28,7 @@ type Server struct {
 	routes       map[string]*route
 	isCors       bool
 	corsConfig   cors.Config
-	jwt *JwtAuth
-
+	jwt          *JwtAuth
 }
 
 type route struct {
@@ -136,6 +136,11 @@ func (s *Server) SetJwtAuth(j *JwtAuth) *Server {
 	return s
 }
 
+func (s *Server) GetIdByJwtClaim(c *gin.Context) string {
+	claims:=jwt.ExtractClaims(c)
+	return claims["id"].(string)
+}
+
 
 func (s *Server) Run() {
 	s.startHttpServer()
@@ -211,10 +216,9 @@ func (s *Server) startHttpServer() {
 		router.Any("/metrics", gin.WrapH(promhttp.Handler()))
 	}
 
-
-	if s.jwt !=nil {
-		err:=s.jwt.set(router)
-		if err!=nil {
+	if s.jwt != nil {
+		err := s.jwt.set(router)
+		if err != nil {
 			logger.Error(err, "error during set of jwt middleware")
 		} else {
 			logger.Info("jwt middleware was set")

@@ -91,7 +91,6 @@ func (c *RestClient) NewAuthenticatedRequest(ctx context.Context, baseName strin
 	return cr
 }
 
-
 func (c *RestClient) EnableInstrumenting(nameSpace, subSystem string) *RestClient {
 	ins := instrument.NewInstrumentArray(nameSpace, subSystem, c.Name).
 		AddCounter([]string{"type", "func", "result"}, "counters for total results of function calls").
