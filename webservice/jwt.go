@@ -197,5 +197,7 @@ func (j *JwtAuth) set (r *gin.Engine) (error) {
 		auth.GET(j.refreshPath, authMiddleware.RefreshHandler)
 	}
 
+
+
 	return nil
 }
