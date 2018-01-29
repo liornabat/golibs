@@ -180,7 +180,6 @@ func (j *JwtAuth) set(r *gin.Engine) error {
 	}
 
 	r.POST(j.loginPath, authMiddleware.LoginHandler)
-	r.POST(j.refreshPath,authMiddleware.RefreshHandler)
 	auth := r.Group(j.authPath)
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{

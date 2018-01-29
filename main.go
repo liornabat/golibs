@@ -42,7 +42,7 @@ func main() {
 		SetAuthenticatorFunc(authenticator).
 		SetKey("asfukasdasasd-awdasda-234dasdad").
 		SetAuthorizatorFunc(authorizator)
-	s := ws.NewServer("8000").
+	s := ws.NewServer("8080").
 		SetJwtAuth(j)
 
 	s.Run()
