@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"golibs/instrument"
 	"golibs/logging"
-	"gopkg.in/resty.v1"
 	"time"
+
+	"github.com/liornabat/golibs/tracing"
+	"gopkg.in/resty.v1"
 )
 
 type RestClient struct {
@@ -20,6 +22,7 @@ type RestClient struct {
 	request        *ClientRequest
 	ins            *instrument.InstrumentArray
 	isInstrumented bool
+	tracer         *tracing.Factory
 }
 type ClientRequest struct {
 	r         *resty.Request
@@ -29,6 +32,8 @@ type ClientRequest struct {
 	reqStruct interface{}
 	resStruct interface{}
 	errStruct interface{}
+	ctx       context.Context
+	tracer    *tracing.Factory
 }
 
 type ClientResponse struct {
@@ -53,6 +58,20 @@ func NewRestClient(name, host, port, user, password string) *RestClient {
 	}
 	return c
 }
+
+func NewRestClientWithTracer(tracer *tracing.Factory, name, host, port, user, password string) *RestClient {
+	c := &RestClient{
+		Name:     name,
+		Host:     host,
+		Port:     port,
+		User:     user,
+		Password: password,
+		Routes:   make(map[string]string),
+		Headers:  make(map[string]string),
+		tracer:   tracer,
+	}
+	return c
+}
 func (c *RestClient) AddBaseRoute(name, path string) *RestClient {
 	c.Routes[name] = path
 	return c
@@ -63,8 +82,10 @@ func (c *RestClient) SetHeader(k, v string) *RestClient {
 }
 func (c *RestClient) NewRequest(ctx context.Context, baseName string) *ClientRequest {
 	cr := &ClientRequest{
-		r:   resty.R(),
-		ins: c.ins,
+		r:      resty.R(),
+		ins:    c.ins,
+		ctx:    ctx,
+		tracer: c.tracer,
 	}
 	cr.base = baseName
 	cr.r.SetHeaders(c.Headers)
@@ -136,19 +157,30 @@ func (cr *ClientRequest) SetParams(parms map[string]string) *ClientRequest {
 }
 
 func (cr *ClientRequest) Post() (*ClientResponse, error) {
+	if cr.tracer != nil {
+		return cr.executeWithTracing("post", cr.path)
+	}
 	return cr.execute("post", cr.path)
 }
 
 func (cr *ClientRequest) Get() (*ClientResponse, error) {
-
+	if cr.tracer != nil {
+		return cr.executeWithTracing("get", cr.path)
+	}
 	return cr.execute("get", cr.path)
 }
 
 func (cr *ClientRequest) Put() (*ClientResponse, error) {
+	if cr.tracer != nil {
+		return cr.executeWithTracing("put", cr.path)
+	}
 	return cr.execute("put", cr.path)
 }
 
 func (cr *ClientRequest) Delete() (*ClientResponse, error) {
+	if cr.tracer != nil {
+		return cr.executeWithTracing("delete", cr.path)
+	}
 	return cr.execute("delete", cr.path)
 }
 
@@ -182,6 +214,68 @@ func (cr *ClientRequest) execute(kind, url string) (*ClientResponse, error) {
 		loggerHttp.Error(err, fmt.Sprintf("calling: %s ", cr.path))
 		return nil, err
 	} else {
+		if response.StatusCode() <= 299 {
+			if cr.ins != nil {
+				cr.ins.IncToCounter(kind, cr.base, "Ok")
+			}
+		} else {
+			if cr.ins != nil {
+				cr.ins.IncToCounter(kind, cr.base, "Fail")
+			}
+			loggerHttp.Error(nil, fmt.Sprintf("status code: %d ,calling: %s ", response.StatusCode(), cr.path))
+		}
+
+	}
+	return cr.getClientResponse(response), err
+}
+
+func (cr *ClientRequest) executeWithTracing(kind, url string) (*ClientResponse, error) {
+	span := tracing.NewSpanFromContext("rest_client/execute", cr.ctx)
+	defer span.Finish()
+
+	span.SetHTTPUrl(cr.r.RawRequest.RequestURI)
+	span.LogKV("path", cr.path)
+	var response *resty.Response
+	var err error
+	loggerHttp.Debug(fmt.Sprintf("calling %s: %s ", kind, cr.path))
+	start := time.Now()
+	defer func() {
+		if cr.ins != nil {
+			cr.ins.ObserveHistogram(float64(time.Since(start)), kind, cr.base)
+		}
+		loggerHttp.Debug(fmt.Sprintf("calling %s: %s completed", kind, cr.path))
+	}()
+
+	switch kind {
+	case "get":
+		span.SetHTTPMethod("GET")
+		span.LogKV("parameters", cr.r.URL)
+		response, err = cr.r.Get(url)
+
+	case "post":
+		span.SetHTTPMethod("POST")
+		span.LogKV("body", fmt.Sprintf("%v", cr.r.Body))
+		response, err = cr.r.Post(url)
+	case "put":
+		span.SetHTTPMethod("PUT")
+		span.LogKV("body", fmt.Sprintf("%v", cr.r.Body))
+		response, err = cr.r.Put(url)
+	case "delete":
+		span.SetHTTPMethod("DELETE")
+		span.LogKV("body", fmt.Sprintf("%v", cr.r.Body))
+		response, err = cr.r.Delete(url)
+	}
+
+	if err != nil {
+		if cr.ins != nil {
+			cr.ins.IncToCounter(kind, cr.base, "Fail")
+		}
+		loggerHttp.Error(err, fmt.Sprintf("calling: %s ", cr.path))
+		span.SetError(err)
+
+		return nil, err
+	} else {
+		span.SetHTTPStatusCode(uint16(response.StatusCode()))
 		if response.StatusCode() <= 299 {
 			if cr.ins != nil {
 				cr.ins.IncToCounter(kind, cr.base, "Ok")

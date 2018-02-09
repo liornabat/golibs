@@ -144,3 +144,7 @@ func StoreSpanToCache(key string, span *Span) {
 func CloseTracing() {
 	tracerFactory.Close()
 }
+
+func GetTracer() *Factory {
+	return tracerFactory
+}
