@@ -13,18 +13,23 @@ type Span struct {
 	context.Context
 }
 
-func (s *Span) GetContextFromSpan(ctx ...context.Context) context.Context {
-	if len(ctx) > 0 {
-		if ctx[0] != nil {
-			ctxOut := opentracing.ContextWithSpan(ctx[0], s.Span)
-			s.Context = ctxOut
-			return ctxOut
-		}
-	}
-	ctxOut := opentracing.ContextWithSpan(context.Background(), s.Span)
-	s.Context = ctxOut
-	return ctxOut
+// func (s *Span) GetContextFromSpan(ctx ...context.Context) context.Context {
+// 	if len(ctx) > 0 {
+// 		if ctx[0] != nil {
+// 			ctxOut := opentracing.ContextWithSpan(ctx[0], s.Span)
+// 			s.Context = ctxOut
+// 			return ctxOut
+// 		}
+// 	}
+// 	ctxOut := opentracing.ContextWithSpan(context.Background(), s.Span)
+// 	s.Context = ctxOut
+// 	return ctxOut
 
+// }
+
+func (s *Span) StoreSpanToCache(key string) *Span {
+	tracerFactory.cache.putSpan(key, s)
+	return s
 }
 
 func (s *Span) SetBaggage(key, value string) *Span {

@@ -53,59 +53,77 @@ func InitTracing(serviceName string, ops TracingOptions, tags ...*Tags) error {
 	return nil
 }
 
-func NewRootSpan(name string, ops ...SpanOptions) (span *Span) {
+// func NewRootSpan(name string, ops ...SpanOptions) (span *Span) {
 
-	span = &Span{
-		Span: tracerFactory.Tracer.StartSpan(name),
-	}
-	if len(ops) > 0 {
-		if (ops[0].Tags) != nil {
-			span.Span = ops[0].Tags.SetTagsToSpan(span.Span)
-		}
-		if ops[0].MustSample {
-			span.SetSamplingPriority(1)
-		}
+// 	span = &Span{
+// 		Span: tracerFactory.Tracer.StartSpan(name),
+// 	}
+// 	if len(ops) > 0 {
+// 		if (ops[0].Tags) != nil {
+// 			span.Span = ops[0].Tags.SetTagsToSpan(span.Span)
+// 		}
+// 		if ops[0].MustSample {
+// 			span.SetSamplingPriority(1)
+// 		}
 
-	}
-	if tracerFactory.SampleAllSpans {
-		span.SetSamplingPriority(1)
-	}
-	return
-}
+// 	}
+// 	if tracerFactory.SampleAllSpans {
+// 		span.SetSamplingPriority(1)
+// 	}
+// 	return
+// }
 
-func NewSpanFromContext(name string, ctx context.Context, ops ...SpanOptions) (span *Span) {
+func StartSpan(ctx context.Context, spanName string) (context.Context, *Span) {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-
-	s, c := opentracing.StartSpanFromContext(ctx, name)
-	span = &Span{
+	s, c := opentracing.StartSpanFromContext(ctx, spanName)
+	span := &Span{
 		s,
 		c,
 	}
 
-	if len(ops) > 0 {
-		if (ops[0].Tags) != nil {
-			span.Span = ops[0].Tags.SetTagsToSpan(span.Span)
-		}
-		if ops[0].MustSample {
+	if span != nil {
+		if tracerFactory.SampleAllSpans {
 			span.SetSamplingPriority(1)
 		}
-
 	}
-	if tracerFactory.SampleAllSpans {
-		span.SetSamplingPriority(1)
-	}
-
-	return
+	ctxOut := opentracing.ContextWithSpan(ctx, span.Span)
+	return ctxOut, span
 }
 
-func NewSpanFromCache(name string, key string, moreKeys ...string) (span *Span) {
+// func NewSpanFromContext(name string, ctx context.Context, ops ...SpanOptions) (span *Span) {
+// 	if ctx == nil {
+// 		ctx = context.Background()
+// 	}
+
+// 	s, c := opentracing.StartSpanFromContext(ctx, name)
+// 	span = &Span{
+// 		s,
+// 		c,
+// 	}
+
+// 	if len(ops) > 0 {
+// 		if (ops[0].Tags) != nil {
+// 			span.Span = ops[0].Tags.SetTagsToSpan(span.Span)
+// 		}
+// 		if ops[0].MustSample {
+// 			span.SetSamplingPriority(1)
+// 		}
+
+// 	}
+// 	if tracerFactory.SampleAllSpans {
+// 		span.SetSamplingPriority(1)
+// 	}
+
+// 	return
+// }
+func StartSpanFromCache(spanName string, key string, moreKeys ...string) (ctx context.Context, span *Span) {
 
 	cacheSpan, ok := tracerFactory.cache.getSpan(key)
 	if ok {
-		cacheCtx := cacheSpan.GetContextFromSpan()
-		s, c := opentracing.StartSpanFromContext(cacheCtx, name)
+		ctx := opentracing.ContextWithSpan(context.Background(), cacheSpan.Span)
+		s, c := opentracing.StartSpanFromContext(ctx, spanName)
 		span = &Span{
 			s,
 			c,
@@ -115,8 +133,8 @@ func NewSpanFromCache(name string, key string, moreKeys ...string) (span *Span) 
 		for _, altKey := range moreKeys {
 			cacheSpan, ok := tracerFactory.cache.getSpan(altKey)
 			if ok {
-				cacheCtx := cacheSpan.GetContextFromSpan()
-				s, c := opentracing.StartSpanFromContext(cacheCtx, name)
+				ctx := opentracing.ContextWithSpan(context.Background(), cacheSpan.Span)
+				s, c := opentracing.StartSpanFromContext(ctx, spanName)
 				span = &Span{
 					s,
 					c,
@@ -136,10 +154,46 @@ func NewSpanFromCache(name string, key string, moreKeys ...string) (span *Span) 
 	return
 }
 
-func StoreSpanToCache(key string, span *Span) {
-	tracerFactory.cache.putSpan(key, span)
+// func NewSpanFromCache(name string, key string, moreKeys ...string) ( span *Span) {
 
-}
+// 	cacheSpan, ok := tracerFactory.cache.getSpan(key)
+// 	if ok {
+// 		cacheCtx := cacheSpan.GetContextFromSpan()
+// 		s, c := opentracing.StartSpanFromContext(cacheCtx, name)
+// 		span = &Span{
+// 			s,
+// 			c,
+// 		}
+
+// 	} else {
+// 		for _, altKey := range moreKeys {
+// 			cacheSpan, ok := tracerFactory.cache.getSpan(altKey)
+// 			if ok {
+// 				cacheCtx := cacheSpan.GetContextFromSpan()
+// 				s, c := opentracing.StartSpanFromContext(cacheCtx, name)
+// 				span = &Span{
+// 					s,
+// 					c,
+// 				}
+
+// 				break
+// 			}
+// 		}
+
+// 	}
+// 	if span != nil {
+// 		if tracerFactory.SampleAllSpans {
+// 			span.SetSamplingPriority(1)
+// 		}
+// 	}
+
+// 	return
+// }
+
+// func StoreSpanToCache(key string, span *Span) {
+// 	tracerFactory.cache.putSpan(key, span)
+
+// }
 
 func CloseTracing() {
 	tracerFactory.Close()
