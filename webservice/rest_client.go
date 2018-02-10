@@ -7,7 +7,7 @@ import (
 	"golibs/logging"
 	"time"
 
-	"github.com/liornabat/golibs/tracing"
+	"golibs/tracing"
 	"gopkg.in/resty.v1"
 )
 
@@ -230,7 +230,7 @@ func (cr *ClientRequest) execute(kind, url string) (*ClientResponse, error) {
 }
 
 func (cr *ClientRequest) executeWithTracing(kind, url string) (*ClientResponse, error) {
-	span := tracing.NewSpanFromContext("rest_client/execute", cr.ctx)
+	_, span := tracing.StartSpan(cr.ctx, "rest_client/execute")
 	defer span.Finish()
 
 	span.SetHTTPUrl(cr.r.RawRequest.RequestURI)
