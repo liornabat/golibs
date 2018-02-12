@@ -23,6 +23,7 @@ type Factory struct {
 	defaultTags    *Tags
 	SampleAllSpans bool
 	cache          *spanCache
+	isClose        bool
 }
 
 type SpanOptions struct {
@@ -118,8 +119,9 @@ func StartSpan(ctx context.Context, spanName string) (context.Context, *Span) {
 
 // 	return
 // }
-func StartSpanFromCache(spanName string, key string, moreKeys ...string) (ctx context.Context, span *Span) {
-
+func StartSpanFromCache(spanName string, key string, moreKeys ...string) (context.Context, *Span) {
+	var span *Span
+	ctxOut := context.Background()
 	cacheSpan, ok := tracerFactory.cache.getSpan(key)
 	if ok {
 		ctx := opentracing.ContextWithSpan(context.Background(), cacheSpan.Span)
@@ -149,9 +151,10 @@ func StartSpanFromCache(spanName string, key string, moreKeys ...string) (ctx co
 		if tracerFactory.SampleAllSpans {
 			span.SetSamplingPriority(1)
 		}
+		ctxOut = opentracing.ContextWithSpan(ctxOut, span.Span)
 	}
 
-	return
+	return ctxOut, span
 }
 
 // func NewSpanFromCache(name string, key string, moreKeys ...string) ( span *Span) {
@@ -196,6 +199,7 @@ func StartSpanFromCache(spanName string, key string, moreKeys ...string) (ctx co
 // }
 
 func CloseTracing() {
+	tracerFactory.isClose = true
 	tracerFactory.Close()
 }
 

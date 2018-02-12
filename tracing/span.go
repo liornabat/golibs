@@ -59,6 +59,9 @@ func (s *Span) LogKV(key, value string) *Span {
 }
 
 func (s *Span) Finish() {
+	if tracerFactory.isClose {
+		panic("tracer is closed")
+	}
 	s.Span.Finish()
 }
 
