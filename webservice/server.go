@@ -6,14 +6,15 @@ import (
 	"fmt"
 	"net/http"
 
+	log "golibs/logging"
+	"time"
+
+	"github.com/appleboy/gin-jwt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
 	"github.com/sirupsen/logrus"
-	log "golibs/logging"
-	"time"
-	"github.com/appleboy/gin-jwt"
 )
 
 type RouteType int
@@ -29,6 +30,8 @@ type Server struct {
 	isCors       bool
 	corsConfig   cors.Config
 	jwt          *JwtAuth
+	readTimeout  time.Duration
+	writeTimeout time.Duration
 }
 
 type route struct {
@@ -49,9 +52,11 @@ var logger = log.NewLogger("web/server")
 
 func NewServer(p string) *Server {
 	s := &Server{
-		port:       p,
-		routes:     make(map[string]*route),
-		corsConfig: cors.DefaultConfig(),
+		port:         p,
+		routes:       make(map[string]*route),
+		corsConfig:   cors.DefaultConfig(),
+		readTimeout:  10 * time.Second,
+		writeTimeout: 10 * time.Second,
 	}
 	gin.SetMode(gin.ReleaseMode)
 
@@ -65,6 +70,16 @@ func (s *Server) SetHealthFunc(f func() (bool, string)) *Server {
 
 func (s *Server) SetReadyFunc(f func() (bool, string)) *Server {
 	s.readyFunc = f
+	return s
+}
+
+func (s *Server) SetReadTimeout(value time.Duration) *Server {
+	s.readTimeout = value
+	return s
+}
+
+func (s *Server) SetWriteTimeout(value time.Duration) *Server {
+	s.writeTimeout = value
 	return s
 }
 
@@ -137,10 +152,9 @@ func (s *Server) SetJwtAuth(j *JwtAuth) *Server {
 }
 
 func (s *Server) GetIdByJwtClaim(c *gin.Context) string {
-	claims:=jwt.ExtractClaims(c)
+	claims := jwt.ExtractClaims(c)
 	return claims["id"].(string)
 }
-
 
 func (s *Server) Run() {
 	s.startHttpServer()
@@ -225,8 +239,15 @@ func (s *Server) startHttpServer() {
 		}
 
 	}
+	httpServer := &http.Server{
+		Addr:           fmt.Sprintf(":%s", s.port),
+		Handler:        router,
+		ReadTimeout:    s.readTimeout,
+		WriteTimeout:   s.writeTimeout,
+		MaxHeaderBytes: 1 << 20,
+	}
 
-	go router.Run(fmt.Sprintf(":%s", s.port))
+	go httpServer.ListenAndServe()
 
 }
 
