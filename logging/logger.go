@@ -26,7 +26,7 @@ func NewLogger(src string) *Logger {
 		log: logrus.WithFields(logrus.Fields{"source": src}),
 		src: src,
 	}
-	l.SetDebug(false)
+	l.SetDebug(l.isDebug)
 	return l
 }
 func (l *Logger) NewLogger(src string) *Logger {
