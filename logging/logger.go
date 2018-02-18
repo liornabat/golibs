@@ -8,14 +8,16 @@ import (
 )
 
 type Logger struct {
-	log *logrus.Entry
-	src string
-	f   func(msg string)
+	log     *logrus.Entry
+	src     string
+	f       func(msg string)
+	isDebug bool
 }
 
 func InitLoggers() {
 	logrus.SetFormatter(&logrus.TextFormatter{DisableColors: true})
 	logrus.SetOutput(os.Stdout)
+	logrus.SetLevel(logrus.InfoLevel)
 
 }
 
@@ -24,13 +26,16 @@ func NewLogger(src string) *Logger {
 		log: logrus.WithFields(logrus.Fields{"source": src}),
 		src: src,
 	}
+	l.SetDebug(false)
 	return l
 }
 func (l *Logger) NewLogger(src string) *Logger {
 	nl := &Logger{
-		log: logrus.WithFields(logrus.Fields{"source": l.src + "/" + src}),
-		src: l.src + "/" + src,
+		log:     logrus.WithFields(logrus.Fields{"source": l.src + "/" + src}),
+		src:     l.src + "/" + src,
+		isDebug: l.isDebug,
 	}
+	nl.SetDebug(nl.isDebug)
 	return nl
 }
 func SetDebug(isDebug bool) {
