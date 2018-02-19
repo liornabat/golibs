@@ -1,9 +1,10 @@
 package tracing
 
 import (
-	"github.com/opentracing/opentracing-go"
-
 	"context"
+
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
 )
@@ -54,26 +55,6 @@ func InitTracing(serviceName string, ops TracingOptions, tags ...*Tags) error {
 	return nil
 }
 
-// func NewRootSpan(name string, ops ...SpanOptions) (span *Span) {
-
-// 	span = &Span{
-// 		Span: tracerFactory.Tracer.StartSpan(name),
-// 	}
-// 	if len(ops) > 0 {
-// 		if (ops[0].Tags) != nil {
-// 			span.Span = ops[0].Tags.SetTagsToSpan(span.Span)
-// 		}
-// 		if ops[0].MustSample {
-// 			span.SetSamplingPriority(1)
-// 		}
-
-// 	}
-// 	if tracerFactory.SampleAllSpans {
-// 		span.SetSamplingPriority(1)
-// 	}
-// 	return
-// }
-
 func StartSpan(ctx context.Context, spanName string) (context.Context, *Span) {
 	if ctx == nil {
 		ctx = context.Background()
@@ -93,32 +74,6 @@ func StartSpan(ctx context.Context, spanName string) (context.Context, *Span) {
 	return ctxOut, span
 }
 
-// func NewSpanFromContext(name string, ctx context.Context, ops ...SpanOptions) (span *Span) {
-// 	if ctx == nil {
-// 		ctx = context.Background()
-// 	}
-
-// 	s, c := opentracing.StartSpanFromContext(ctx, name)
-// 	span = &Span{
-// 		s,
-// 		c,
-// 	}
-
-// 	if len(ops) > 0 {
-// 		if (ops[0].Tags) != nil {
-// 			span.Span = ops[0].Tags.SetTagsToSpan(span.Span)
-// 		}
-// 		if ops[0].MustSample {
-// 			span.SetSamplingPriority(1)
-// 		}
-
-// 	}
-// 	if tracerFactory.SampleAllSpans {
-// 		span.SetSamplingPriority(1)
-// 	}
-
-// 	return
-// }
 func StartSpanFromCache(spanName string, key string, moreKeys ...string) (context.Context, *Span) {
 	var span *Span
 	ctxOut := context.Background()
@@ -157,50 +112,31 @@ func StartSpanFromCache(spanName string, key string, moreKeys ...string) (contex
 	return ctxOut, span
 }
 
-// func NewSpanFromCache(name string, key string, moreKeys ...string) ( span *Span) {
+func StartSpanFromBinary(spanName string, in []byte) (context.Context, *Span, error) {
+	var span *Span
+	var ctxOut context.Context = context.Background()
+	wireContext, err := tracerFactory.Extract(opentracing.Binary, in)
+	if wireContext == nil || err != nil {
+		return context.Background(), nil, err
+	}
+	span = &Span{
+		Span: opentracing.StartSpan(spanName, ext.RPCServerOption(wireContext)),
+	}
 
-// 	cacheSpan, ok := tracerFactory.cache.getSpan(key)
-// 	if ok {
-// 		cacheCtx := cacheSpan.GetContextFromSpan()
-// 		s, c := opentracing.StartSpanFromContext(cacheCtx, name)
-// 		span = &Span{
-// 			s,
-// 			c,
-// 		}
+	if span != nil {
+		if tracerFactory.SampleAllSpans {
+			span.SetSamplingPriority(1)
+		}
+		ctxOut = opentracing.ContextWithSpan(context.Background(), span.Span)
+	}
 
-// 	} else {
-// 		for _, altKey := range moreKeys {
-// 			cacheSpan, ok := tracerFactory.cache.getSpan(altKey)
-// 			if ok {
-// 				cacheCtx := cacheSpan.GetContextFromSpan()
-// 				s, c := opentracing.StartSpanFromContext(cacheCtx, name)
-// 				span = &Span{
-// 					s,
-// 					c,
-// 				}
-
-// 				break
-// 			}
-// 		}
-
-// 	}
-// 	if span != nil {
-// 		if tracerFactory.SampleAllSpans {
-// 			span.SetSamplingPriority(1)
-// 		}
-// 	}
-
-// 	return
-// }
-
-// func StoreSpanToCache(key string, span *Span) {
-// 	tracerFactory.cache.putSpan(key, span)
-
-// }
+	return ctxOut, span, err
+}
 
 func CloseTracing() {
 	tracerFactory.isClose = true
 	tracerFactory.Close()
+
 }
 
 func GetTracer() *Factory {

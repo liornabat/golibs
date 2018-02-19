@@ -1,9 +1,9 @@
 package tracing
 
 import (
-	"github.com/opentracing/opentracing-go"
-
 	"context"
+
+	"github.com/opentracing/opentracing-go"
 )
 
 // Span Struct
@@ -12,20 +12,6 @@ type Span struct {
 
 	context.Context
 }
-
-// func (s *Span) GetContextFromSpan(ctx ...context.Context) context.Context {
-// 	if len(ctx) > 0 {
-// 		if ctx[0] != nil {
-// 			ctxOut := opentracing.ContextWithSpan(ctx[0], s.Span)
-// 			s.Context = ctxOut
-// 			return ctxOut
-// 		}
-// 	}
-// 	ctxOut := opentracing.ContextWithSpan(context.Background(), s.Span)
-// 	s.Context = ctxOut
-// 	return ctxOut
-
-// }
 
 func (s *Span) StoreSpanToCache(key string) *Span {
 	tracerFactory.cache.putSpan(key, s)
@@ -181,4 +167,9 @@ func (s *Span) SetSpanKindConsumer() *Span {
 func (s *Span) SetTag(key string, value interface{}) *Span {
 	s.Span.SetTag(key, value)
 	return s
+}
+
+func (s *Span) ToBinary(out []byte) {
+	tracerFactory.Inject(s.Span.Context(), opentracing.Binary, out)
+	return
 }
