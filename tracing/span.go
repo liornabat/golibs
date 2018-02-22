@@ -169,7 +169,7 @@ func (s *Span) SetTag(key string, value interface{}) *Span {
 	return s
 }
 
-func (s *Span) ToBinary(out []byte) {
+func (s *Span) ToBinary() (out []byte) {
 	tracerFactory.Inject(s.Span.Context(), opentracing.Binary, out)
 	return
 }
