@@ -56,3 +56,9 @@ type Options struct {
 // EvictCallback is a type for notifying applications when an item is
 // scheduled for eviction from the Cache.
 type EvictCallback func(key string, value interface{})
+
+type cacheEntry struct {
+	key        string
+	expiration time.Time
+	value      interface{}
+}

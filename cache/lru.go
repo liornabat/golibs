@@ -153,8 +153,3 @@ func (c *LRU) Size() int {
 	return len(c.byKey)
 }
 
-type cacheEntry struct {
-	key        string
-	expiration time.Time
-	value      interface{}
-}
