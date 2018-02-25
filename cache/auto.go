@@ -35,12 +35,9 @@ func (ac *AutoCache) Get(key string) interface{} {
 	return nil
 }
 
-func (ac *AutoCache) Exist(key string) (interface{}, bool) {
-	v, ok := ac.m.Load(key)
-	if ok {
-		return v.(*cacheEntry).value, true
-	}
-	return nil, false
+func (ac *AutoCache) Exist(key string) bool {
+	_, ok := ac.m.Load(key)
+	return ok
 }
 
 func (ac *AutoCache) Delete(key string) {
