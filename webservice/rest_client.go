@@ -222,7 +222,7 @@ func (cr *ClientRequest) execute(kind, url string) (*ClientResponse, error) {
 			if cr.ins != nil {
 				cr.ins.IncToCounter(kind, cr.base, "Fail")
 			}
-			loggerHttp.Error(nil, fmt.Sprintf("status code: %d ,calling: %s ", response.StatusCode(), cr.path))
+			loggerHttp.Debug(nil, fmt.Sprintf("status code: %d ,calling: %s ", response.StatusCode(), cr.path))
 		}
 
 	}
@@ -284,7 +284,7 @@ func (cr *ClientRequest) executeWithTracing(kind, url string) (*ClientResponse, 
 			if cr.ins != nil {
 				cr.ins.IncToCounter(kind, cr.base, "Fail")
 			}
-			loggerHttp.Error(nil, fmt.Sprintf("status code: %d ,calling: %s ", response.StatusCode(), cr.path))
+			loggerHttp.Debug(nil, fmt.Sprintf("status code: %d ,calling: %s ", response.StatusCode(), cr.path))
 		}
 
 	}
