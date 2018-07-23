@@ -29,8 +29,8 @@ type JwtAuth struct {
 	key               []byte
 	timeout           time.Duration
 	maxRefresh        time.Duration
-	authenticatorFunc func(userId, password string, c *gin.Context) (string, bool)
-	authorizatorFunc  func(userId string, c *gin.Context) bool
+	authenticatorFunc func(userId, password string, c *gin.Context) (interface{}, bool)
+	authorizatorFunc  func(userId interface{}, c *gin.Context) bool
 	unauthorizedFunc  func(c *gin.Context, code int, message string)
 	loginPath         string
 	authPath          string
@@ -89,13 +89,13 @@ func (j *JwtAuth) SetMaxRefresh(value time.Duration) *JwtAuth {
 }
 
 // Set Authentication func. should be func(userId,password string,c *gin.Context) (string,bool) format
-func (j *JwtAuth) SetAuthenticatorFunc(f func(userId, password string, c *gin.Context) (string, bool)) *JwtAuth {
+func (j *JwtAuth) SetAuthenticatorFunc(f func(userId, password string, c *gin.Context) (interface{}, bool)) *JwtAuth {
 	j.authenticatorFunc = f
 	return j
 }
 
 // Set Authorizator func. should be func(userId string,c *gin.Context) (bool) format
-func (j *JwtAuth) SetAuthorizatorFunc(f func(userId string, c *gin.Context) bool) *JwtAuth {
+func (j *JwtAuth) SetAuthorizatorFunc(f func(userId interface{}, c *gin.Context) bool) *JwtAuth {
 	j.authorizatorFunc = f
 	return j
 }
