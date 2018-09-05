@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	ws "golibs/webservice"
+	ws "github.com/liornabat/golibs/webservice"
 
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"

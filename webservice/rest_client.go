@@ -3,8 +3,8 @@ package webservice
 import (
 	"context"
 	"fmt"
-	"golibs/instrument"
-	"golibs/logging"
+	"github.com/liornabat/golibs/instrument"
+	"github.com/liornabat/golibs/logging"
 	"time"
 
 	"github.com/liornabat/golibs/tracing"

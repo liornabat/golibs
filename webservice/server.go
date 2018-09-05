@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	log "golibs/logging"
+	log "github.com/liornabat/golibs/logging"
 	"time"
 
 	"github.com/appleboy/gin-jwt"
